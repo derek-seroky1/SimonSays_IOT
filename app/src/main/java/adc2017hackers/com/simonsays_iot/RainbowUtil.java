@@ -18,6 +18,8 @@ package adc2017hackers.com.simonsays_iot;
 
 import android.graphics.Color;
 
+import java.util.Arrays;
+
 /**
  * Helper methods for computing outputs on the Rainbow HAT
  */
@@ -53,6 +55,8 @@ public class RainbowUtil {
             case YELLOW:
                 colorStrip[6] = Color.YELLOW;
                 break;
+            case ALL:
+                Arrays.fill(colorStrip, Color.WHITE);
         }
 
         return colorStrip;

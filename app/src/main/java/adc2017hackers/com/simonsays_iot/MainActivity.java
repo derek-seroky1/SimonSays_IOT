@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 
 import com.google.android.things.contrib.driver.apa102.Apa102;
@@ -21,6 +22,7 @@ public class MainActivity extends Activity
     private static final int LEDSTRIP_BRIGHTNESS = 1;
     private AlphanumericDisplay mDisplay;
     private Apa102              mLedstrip;
+    private boolean gameStarted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +34,7 @@ public class MainActivity extends Activity
         try {
             mDisplay = new AlphanumericDisplay(BoardDefaults.getI2cBus());
             mDisplay.setEnabled(true);
-            mDisplay.display("4321");
+//            mDisplay.display("4321");
             Log.d(TAG, "Initialized I2C Display");
         } catch (IOException e) {
             throw new RuntimeException("Error initializing display", e);
@@ -60,6 +62,7 @@ public class MainActivity extends Activity
 
         //TODO: Register for sensor events here
         updateLedDisplay(LedColors.YELLOW);
+        startGame();
     }
 
     @Override
@@ -130,6 +133,38 @@ public class MainActivity extends Activity
                 Log.e(TAG, "Error updating ledstrip", e);
             }
         }
+    }
+
+    private void startGame()
+    {
+        gameStarted = true;
+        new CountDownTimer(3500, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                updateDisplay((int) millisUntilFinished / 1000);
+            }
+
+            public void onFinish() {
+                updateDisplay(0);
+                gameTimer();
+            }
+        }.start();
+    }
+
+    private void gameTimer()
+    {
+        new CountDownTimer(3000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+//                updateDisplay((int) millisUntilFinished / 1000);
+            }
+
+            public void onFinish() {
+                updateDisplay(0);
+//                updateLedDisplay(LedColors.ALL);
+                gameStarted = false;
+            }
+        }.start();
     }
 
 //    // Callback when SensorManager delivers new data.
